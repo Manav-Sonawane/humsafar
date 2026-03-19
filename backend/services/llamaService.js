@@ -2,27 +2,40 @@ const axios = require("axios")
 
 async function generateItinerary(userPrompt) {
     const systemPrompt = `
-                You are a travel planner.
+You are an expert travel planner.
 
-                STRICT RULES:
-                - Return ONLY valid JSON
-                - Do NOT add explanations
-                - Do NOT add text outside JSON
-                - Do NOT use markdown
+STRICT RULES:
+- Return ONLY valid JSON
+- No extra text
+- No markdown
+- No explanations
 
-                FORMAT:
+FORMAT:
 
-                {
-                "trip_summary": "string",
-                "days": [
-                {
-                    "day": number,
-                    "location": "string",
-                    "activities": ["string"]
-                }
-                ]
-                }
-                `
+{
+ "trip_summary": "string",
+ "days": [
+   {
+     "day": number,
+     "location": "string",
+     "activities": [
+       {
+         "title": "string",
+         "time": "Morning | Afternoon | Evening",
+         "description": "string"
+       }
+     ]
+   }
+ ]
+}
+
+GUIDELINES:
+- Use REAL places (temples, beaches, forts, markets)
+- Avoid generic phrases like "explore city"
+- Make itinerary realistic and sequential
+- Include travel days properly
+- Keep budget-friendly options in mind
+`
     console.log("Generating itinerary for:", userPrompt);
     const response = await axios.post("http://localhost:11434/api/generate", {
         model: "llama3",

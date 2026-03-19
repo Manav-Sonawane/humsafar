@@ -29,14 +29,23 @@ const TripDisplay = ({ trip }) => {
               </h3>
             </div>
             
-            <ul className="space-y-3">
+            <ul className="space-y-4">
               {day.activities?.map((activity, index) => (
                 <li 
                   key={index} 
-                  className="flex items-start gap-3 text-slate-400 group-hover:text-slate-300 transition-colors"
+                  className="p-3 bg-slate-800/20 border border-slate-700/30 rounded-xl hover:bg-slate-800/40 transition-colors group/item"
                 >
-                  <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-indigo-500/50 shrink-0" />
-                  <span className="text-sm leading-relaxed">{activity}</span>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[10px] uppercase tracking-tighter font-bold text-indigo-400/80 bg-indigo-500/10 px-1.5 py-0.5 rounded border border-indigo-500/20">
+                      {activity?.time}
+                    </span>
+                    <h4 className="text-sm font-bold text-slate-200 group-hover/item:text-white transition-colors">
+                      {activity?.title}
+                    </h4>
+                  </div>
+                  <p className="text-xs text-slate-400 leading-relaxed pl-1 border-l border-slate-700 ml-1">
+                    {activity?.description}
+                  </p>
                 </li>
               ))}
             </ul>
