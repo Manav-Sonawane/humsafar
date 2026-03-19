@@ -2,23 +2,27 @@ const axios = require("axios")
 
 async function generateItinerary(userPrompt) {
     const systemPrompt = `
-You are an AI travel planner.
+                You are a travel planner.
 
-Return ONLY JSON.
+                STRICT RULES:
+                - Return ONLY valid JSON
+                - Do NOT add explanations
+                - Do NOT add text outside JSON
+                - Do NOT use markdown
 
-Format:
+                FORMAT:
 
-{
- "trip_summary": "",
- "days": [
-   {
-     "day": 1,
-     "location": "",
-     "activities": []
-   }
- ]
-}
-`
+                {
+                "trip_summary": "string",
+                "days": [
+                {
+                    "day": number,
+                    "location": "string",
+                    "activities": ["string"]
+                }
+                ]
+                }
+                `
     console.log("Generating itinerary for:", userPrompt);
     const response = await axios.post("http://localhost:11434/api/generate", {
         model: "llama3",
@@ -27,17 +31,29 @@ Format:
         format: "json"
     })
     console.log("Ollama response received.");
-    const text = response.data.response;
+    const raw = response.data.response;
+    console.log("RAW LLM OUTPUT:\n", raw);
 
     try {
-        // Extract JSON block using regex if it's wrapped in conversational text
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
-        const jsonString = jsonMatch ? jsonMatch[0] : text;
-        return JSON.parse(jsonString);
+        const clean = extractJSON(raw);
+        const parsed = JSON.parse(clean);
+
+        if (!parsed.days || !Array.isArray(parsed.days)) {
+            throw new Error("Invalid AI response structure");
+        }
+
+        return parsed;
     } catch (parseError) {
-        console.error("Original text from AI:", text);
-        throw new Error("Failed to parse AI response as JSON. The model may have returned conversational text instead of raw JSON.");
+        console.error("Extraction error:", parseError.message);
+        throw new Error("Failed to parse AI response. The model output was not valid JSON or was missing the required fields.");
     }
+}
+
+function extractJSON(text) {
+    const start = text.indexOf("{");
+    const end = text.lastIndexOf("}");
+    if (start === -1 || end === -1) return text;
+    return text.substring(start, end + 1);
 }
 
 module.exports = { generateItinerary }
