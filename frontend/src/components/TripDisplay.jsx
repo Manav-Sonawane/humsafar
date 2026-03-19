@@ -22,10 +22,10 @@ const TripDisplay = ({ trip }) => {
           >
             <div className="flex items-center gap-4 mb-4">
               <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 font-bold border border-indigo-500/30">
-                {day.day}
+                {day?.day}
               </span>
               <h3 className="text-xl font-bold text-slate-100 group-hover:text-white transition-colors">
-                {day.location}
+                Day {day?.day} — {day?.title || day?.location}
               </h3>
             </div>
             

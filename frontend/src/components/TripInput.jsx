@@ -15,11 +15,11 @@ const TripInput = ({ prompt, setPrompt, onGenerate, loading }) => {
       
       <button
         onClick={onGenerate}
-        disabled={loading || !prompt.trim()}
+        disabled={loading}
         className={`w-full py-4 rounded-xl font-bold text-white transition-all shadow-lg active:scale-95 ${
           loading 
             ? 'bg-slate-800 cursor-not-allowed text-slate-500' 
-            : 'bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 shadow-indigo-500/20'
+            : 'bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 shadow-indigo-500/20 active:from-indigo-700 active:to-indigo-800'
         }`}
       >
         {loading ? (
@@ -31,6 +31,12 @@ const TripInput = ({ prompt, setPrompt, onGenerate, loading }) => {
           'Generate Trip'
         )}
       </button>
+
+      {!loading && !prompt.trim() && (
+        <p className="text-xs text-slate-500 text-center animate-pulse">
+          Please describe your destination and duration to start.
+        </p>
+      )}
     </div>
   );
 };

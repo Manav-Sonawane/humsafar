@@ -11,14 +11,22 @@ function App() {
   const [error, setError] = useState(null);
 
   const generateTrip = async () => {
-    if (!prompt.trim()) return;
+    if (!prompt || !prompt.trim()) {
+      setError("Please enter a destination or prompt to generate a trip.");
+      return;
+    }
     
     try {
       setLoading(true);
       setError(null);
-      setTrip(null); // Clear previous result
+      setTrip(null);
       
       const res = await axios.post("http://localhost:5000/api/trip", { prompt });
+      
+      if (!res.data || !res.data.days) {
+        throw new Error("Received malformed data from the server.");
+      }
+
       setTrip(res.data);
     } catch (err) {
       console.error("API call error:", err);
